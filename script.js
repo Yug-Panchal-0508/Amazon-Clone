@@ -1,4 +1,4 @@
-// script.js
+// Product data
 const products = [
   { id: 1, name: "Wireless Headphones", price: 3499, img: "https://via.placeholder.com/300x200" },
   { id: 2, name: "Ergonomic Chair", price: 8999, img: "https://via.placeholder.com/300x200" },
@@ -6,6 +6,9 @@ const products = [
   { id: 4, name: "Gaming Mouse", price: 1299, img: "https://via.placeholder.com/300x200" }
 ];
 
+let cart = [];
+
+// Render products
 function renderProducts() {
   let html = "";
   products.forEach(p => {
@@ -24,12 +27,35 @@ function renderProducts() {
   $("#product-list").html(html);
 }
 
-let cart = [];
-
+// Update cart button count
 function updateCartBtn() {
-  $(".btn-outline-light").text(`Cart(${cart.length})`);
+  $("#cart-btn").text(`Cart (${cart.length})`);
 }
 
+// Render cart
+function renderCart() {
+  let html = "";
+  let total = 0;
+  if (cart.length === 0) {
+    html = "<p>Your cart is empty</p>";
+  } else {
+    cart.forEach((p, i) => {
+      html += `
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <span>${p.name}</span>
+          <div>
+            <button class="btn btn-sm btn-danger remove-item" data-index="${i}">x</button>
+            ₹${p.price}
+          </div>
+        </div>`;
+      total += p.price;
+    });
+    html += `<hr><strong>Total: ₹${total}</strong>`;
+  }
+  $("#cart-items").html(html);
+}
+
+// Add item to cart
 $(document).on("click", ".add-to-cart", function () {
   const id = $(this).data("id");
   const product = products.find(p => p.id === id);
@@ -37,6 +63,22 @@ $(document).on("click", ".add-to-cart", function () {
   updateCartBtn();
 });
 
+// Remove item from cart
+$(document).on("click", ".remove-item", function () {
+  const index = $(this).data("index");
+  cart.splice(index, 1);
+  updateCartBtn();
+  renderCart();
+});
+
+// Open cart modal
+$("#cart-btn").click(function () {
+  renderCart();
+  $("#cartModal").modal("show");
+});
+
+// Init
 $(document).ready(function () {
   renderProducts();
+  updateCartBtn();
 });
