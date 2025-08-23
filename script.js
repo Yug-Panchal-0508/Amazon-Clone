@@ -24,6 +24,19 @@ function renderProducts() {
   $("#product-list").html(html);
 }
 
+let cart = [];
+
+function updateCartBtn() {
+  $(".btn-outline-light").text(`Cart(${cart.length})`);
+}
+
+$(document).on("click", ".add-to-cart", function () {
+  const id = $(this).data("id");
+  const product = products.find(p => p.id === id);
+  cart.push(product);
+  updateCartBtn();
+});
+
 $(document).ready(function () {
   renderProducts();
 });
